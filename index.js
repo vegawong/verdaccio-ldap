@@ -43,8 +43,10 @@ module.exports = Auth;
 // Attempt to authenticate user against LDAP backend
 //
 Auth.prototype.authenticate = function (user, password, callback) {
+  this._logger.trace({user: user}, `ready to authenticate user: ${user}`)
   var cache = this.getCacheUser(user);
   if(cache) {
+    this._logger.trace({user: user}, `get cache user: ${user}`)
     return callback(null, cache);
   }
   this._ldapClient.authenticateAsync(user, password)
