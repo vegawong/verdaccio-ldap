@@ -23,7 +23,10 @@ function Auth(config, stuff) {
   self._config.groupNameAttribute = self._config.groupNameAttribute || 'cn';
 
   // ldap client
-  self._ldapClient = new LdapAuth(self._config.client_options);
+  self._ldapClient = new LdapAuth({
+    log: self._logger,
+    ...self._config.client_options
+  });
 
   self._ldapClient.on('error', (err) => {
     self._logger.warn({
