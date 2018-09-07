@@ -47,7 +47,7 @@ Auth.prototype.authenticate = function (user, password, callback) {
         return callback(null, [
             cacheUser.cn,
             ...cacheUser._groups ? [].concat(cacheUser._groups).map((group) => group.cn) : [],
-            ...cacheuser.memberOf ? [].concat(cacheUser.memberOf).map((groupDn) => rfc2253.parse(groupDn).get('CN')) : [],
+            ...cacheUser.memberOf ? [].concat(cacheUser.memberOf).map((groupDn) => rfc2253.parse(groupDn).get('CN')) : [],
         ]);
     }
 
