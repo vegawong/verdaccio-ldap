@@ -74,6 +74,7 @@ Auth.prototype.authenticate = function (user, password, callback) {
     })
     .catch((err) => {
       // 'No such user' is reported via error
+      this.removeCacheUser(user);
       this._logger.warn({
         user: user,
         err: err,
@@ -99,10 +100,12 @@ Auth.prototype.getCacheUser = function (key) {
         return null;
     }
     if(Date.now() > cacheUser.expiredTime) {
-        delete this._users[key];
+        this._logger({
+            user
+        }, `Ldap --- user: ${key} is outed of expiredTime`);
+        this.removeCacheUser(key);
         return null;
     }
-    this.setCacheUser(key, cacheUser.data);
     return cacheUser.data;
 };
 
@@ -116,4 +119,11 @@ Auth.prototype.setCacheUser = function (key, data) {
         expiredTime: Date.now() + this.cacheTime
     };
     this._users[key] = cacheUser;
+};
+
+Auth.prototype.removeCacheUser = function (key) {
+    this._logger.trace({
+        user: key
+    }, `Ldap --- remove cache user: ${key}`);
+    delete this._users[key];
 };
