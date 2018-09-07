@@ -35,7 +35,7 @@ Auth.prototype.authenticate = function (user, password, callback) {
 
   // https://github.com/vesse/node-ldapauth-fork/issues/61
     LdapClient.on('error', (err) => {
-        this._logger.error({err}, 'ldapClient is crash');
+        this._logger.error({err}, `Ldap --- ldapClient is crash, ${err}`);
     });
 
     const cacheUser = this.getCacheUser(user);
@@ -43,7 +43,7 @@ Auth.prototype.authenticate = function (user, password, callback) {
         this._logger.trace({
             user,
             cacheUser,
-        }, 'find out cache user');
+        }, `Ldap --- find out cache user: ${user}`);
         return callback(null, [
             cacheUser.cn,
             ...cacheUser._groups ? [].concat(cacheUser._groups).map((group) => group.cn) : [],
@@ -53,11 +53,11 @@ Auth.prototype.authenticate = function (user, password, callback) {
 
     this._logger.trace({
         user
-    }, 'miss cache user');
+    }, `Ldap --- miss cache user: ${user}`);
 
     this._logger.trace({
         user: user
-    }, 'generate a request ti ldap server to authenticate');
+    }, `Ldap --- user:${user} generate a request ti ldap server to authenticate`);
 
   LdapClient.authenticateAsync(user, password)
     .then((ldapUser) => {
@@ -108,7 +108,8 @@ Auth.prototype.getCacheUser = function (key) {
 
 Auth.prototype.setCacheUser = function (key, data) {
     this._logger.trace({
-        user: key
+        user: key,
+        data
     }, `Ldap cache set ${data}`);
     const cacheUser = {
         data,
