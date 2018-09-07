@@ -32,7 +32,13 @@ Auth.prototype.authenticate = function (user, password, callback) {
   const LdapClient = new LdapAuth(this._config.client_options);
 
   // https://github.com/vesse/node-ldapauth-fork/issues/61
-  LdapClient.on('error', (err) => {});
+    LdapClient.on('error', (err) => {
+        this._logger.error({err, err}, 'ldapClient is crash')
+    });
+
+    this._logger.trace({
+        user: user
+    }, 'generate a request ti ldap server to authenticate')
 
   LdapClient.authenticateAsync(user, password)
     .then((ldapUser) => {
