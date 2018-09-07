@@ -17,7 +17,7 @@ function Auth(config, stuff) {
   // pass verdaccio logger to ldapauth
   self._config.client_options.log = stuff.logger;
 
-  self.cacheTime = config.cacheTime || 1000 * 60 * 3
+  self.cacheTime = config.cacheTime || 1000 * 60 * 3;
 
   // TODO: Set more defaults
   self._config.groupNameAttribute = self._config.groupNameAttribute || 'cn';
@@ -35,7 +35,7 @@ Auth.prototype.authenticate = function (user, password, callback) {
 
   // https://github.com/vesse/node-ldapauth-fork/issues/61
     LdapClient.on('error', (err) => {
-        this._logger.error({err, err}, 'ldapClient is crash')
+        this._logger.error({err}, 'ldapClient is crash');
     });
 
     const cacheUser = this.getCacheUser(user);
@@ -43,27 +43,27 @@ Auth.prototype.authenticate = function (user, password, callback) {
         this._logger.trace({
             user,
             cacheUser,
-        }, 'find out cache user')
+        }, 'find out cache user');
         return callback(null, [
             cacheUser.cn,
             ...cacheUser._groups ? [].concat(cacheUser._groups).map((group) => group.cn) : [],
             ...cacheuser.memberOf ? [].concat(cacheUser.memberOf).map((groupDn) => rfc2253.parse(groupDn).get('CN')) : [],
-        ])
+        ]);
     }
 
     this._logger.trace({
         user
-    }, 'miss cache user')
+    }, 'miss cache user');
 
     this._logger.trace({
         user: user
-    }, 'generate a request ti ldap server to authenticate')
+    }, 'generate a request ti ldap server to authenticate');
 
   LdapClient.authenticateAsync(user, password)
     .then((ldapUser) => {
       if (!ldapUser) return [];
 
-      this.setCacheUser(user, ldapUser)
+      this.setCacheUser(user, ldapUser);
 
       return [
         ldapUser.cn,
@@ -100,19 +100,19 @@ Auth.prototype.getCacheUser = function (key) {
     }
     if(Date.now() > cacheUser.expiredTime) {
         delete this._user[key];
-        return null:
+        return null;
     }
     this.setCacheUser(key, cacheUser.data);
-    return cacheUser.data
-}:
+    return cacheUser.data;
+};
 
 Auth.prototype.setCacheUser = function (key, data) {
     this._logger.trace({
         user: key
-    }, `Ldap cache set ${data}`)
+    }, `Ldap cache set ${data}`);
     const cacheUser = {
         data,
         expiredTime: Date.now() + this.cacheTime
     };
-    this._users[key] = cacheUser
+    this._users[key] = cacheUser;
 };
