@@ -99,7 +99,7 @@ Auth.prototype.getCacheUser = function (key) {
         return null;
     }
     if(Date.now() > cacheUser.expiredTime) {
-        delete this._user[key];
+        delete this._users[key];
         return null;
     }
     this.setCacheUser(key, cacheUser.data);
