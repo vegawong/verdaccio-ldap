@@ -110,7 +110,7 @@ Auth.prototype.setCacheUser = function (key, data) {
     this._logger.trace({
         user: key,
         data
-    }, `Ldap cache set ${data}`);
+    }, `Ldap cache set: ${key}`);
     const cacheUser = {
         data,
         expiredTime: Date.now() + this.cacheTime
