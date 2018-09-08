@@ -101,7 +101,7 @@ Auth.prototype.getCacheUser = function (key) {
     }
     if(Date.now() > cacheUser.expiredTime) {
         this._logger({
-            user
+            user: key
         }, `Ldap --- user: ${key} is outed of expiredTime`);
         this.removeCacheUser(key);
         return null;
